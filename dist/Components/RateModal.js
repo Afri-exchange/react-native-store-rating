@@ -76,13 +76,14 @@ class RateModal extends react_1.Component {
                 react_1.default.createElement(Button_1.Button, { text: rateBtnText, containerStyle: button, onPress: this.sendRate.bind(this) }))));
     }
     renderContactFormView() {
-        const { buttonContainer, button } = RateModal_1.RateModalStyles;
-        const { commentPlaceholderText, sendBtnText } = this.props;
+        const { buttonContainer, button, buttonCancel, buttonCancelText } = RateModal_1.RateModalStyles;
+        const { commentPlaceholderText, sendBtnText, cancelBtnText } = this.props;
         return (react_1.default.createElement(react_1.default.Fragment, null,
             react_1.default.createElement(TextBox_1.TextBox, { containerStyle: [RateModal_1.RateModalStyles.textBox], textStyle: { paddingVertical: 5 }, value: this.state.review, placeholder: commentPlaceholderText, multiline: true, autoFocus: true, onChangeText: (value) => this.setState({ review: value, reviewError: false }) }),
             react_1.default.createElement(react_native_1.View, null, this.state.reviewError && this.renderReviewError()),
             react_1.default.createElement(react_native_1.View, { style: buttonContainer },
                 react_1.default.createElement(react_native_1.View, { style: { flex: 1 } }),
+                react_1.default.createElement(Button_1.Button, { text: cancelBtnText, containerStyle: [button, buttonCancel], textStyle: buttonCancelText, onPress: this.onClosed.bind(this) }),
                 react_1.default.createElement(Button_1.Button, { text: sendBtnText, containerStyle: button, onPress: this.sendContactUsForm.bind(this) }))));
     }
     renderReviewError() {
@@ -100,11 +101,13 @@ class RateModal extends react_1.Component {
         }
     }
     sendRate() {
-        const { storeRedirectThreshold, playStoreUrl, iTunesStoreUrl } = this.props;
+        const { storeRedirectThreshold, playStoreUrl, iTunesStoreUrl, onSendReview } = this.props;
         if (this.state.rating > storeRedirectThreshold) {
             react_native_1.Platform.OS === 'ios' ?
                 react_native_1.Linking.openURL(iTunesStoreUrl) :
                 react_native_1.Linking.openURL(playStoreUrl);
+            this.setState({ isModalOpen: false });
+            onSendReview();
         }
         else {
             this.setState({ showContactForm: true });
